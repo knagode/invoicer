@@ -1,0 +1,126 @@
+-table_style = "border: 1px solid #ccc; width: 100%; border-right:none; border-bottom:none; margin-left: 0px;"
+-td_style = "border: 1px solid #ccc; border-top: none; border-left:none; padding: 5px;"
+-th_style = td_style + ""
+-th_left_style = td_style + "text-align: right;";
+-h1_style = "font-size: 30px; color: #ccc; text-align: center;"
+- our_company = @object.our_company
+
+
+%div{:style => "clear: both; margin-top: 20px; overflow: auto;font-family:Arial;"}
+  %div{:style => "float:left; margin: 0px 0; width: 50%"}
+    = "#{our_company.name}"
+    %br
+    = "#{our_company.address}, #{our_company.zip_code} #{our_company.city}, Slovenia"
+    %br
+    = "Registration number: #{our_company.registration_number}"
+    %br
+    = "Tel: #{our_company.contact_phone}"
+    %br
+    = "E-mail: #{our_company.contact_email}"
+    %br
+
+    - vat_number_SI = 'VAT number: SI'
+    - if @object.project.partner.country == 'SI'
+      - vat_number_SI = 'Tax number: '
+    ="#{vat_number_SI}#{our_company.vat_number}"
+    %br
+    %br
+
+  %div{:style => "float:left; margin: 0px 0; clear:both; float: left; width: 50%;"}
+    = @object.project.partner.name
+    %br
+    = @object.project.partner.address
+    %br
+    = "#{@object.project.partner.zip_code} #{@object.project.partner.city}, #{(@object.project.partner.country)}"
+    %br
+    ="Attention #{@object.project.partner.attention_to}"
+    %br
+    %br
+    ="VAT number: #{@object.project.partner.vat_number}"
+
+  %div{:style => "float:right; margin: 57px 20px 20px 0px"}
+    %b="Invoice number:  #{@object.invoice_number}"
+    %br
+    = "Invoice date:     #{l @object.sent_at.to_date, format: :default}"
+    %br
+    - if @object.sent_at
+      = "Payment due:    #{l (@object.sent_at.to_date + @object.due_days.days), format: :default}"
+    - else
+      = 'Payment due: /'
+    %br
+    - if @object.service_delivered_at
+      = "Service delivered: #{l (@object.service_delivered_at.to_date), format: :default}"
+    - else
+      = "Service delivered: /"
+    %br
+    %br
+
+  - unless @object.before_table_text.blank?
+    %div{:style => "float:left; margin: 0px 0; clear:left;"}
+      %br
+      = @object.before_table_text
+      %br
+      %br
+      %br
+
+  %table{:style => table_style, :cellspacing => 0}
+    %tr
+      %th{:style => th_style}='Serial no.'
+      %th{:style => th_style}='Service description'
+      %th{:style => th_style}='Quantity'
+      %th{:style => th_style}='Price in EUR per unit'
+      %th{:style => th_style}='Total amount in EUR'
+    
+    - if @object.invoice_items.empty?
+      %tr
+        %td{:style => "#{th_style} text-align: right;"}=1
+        %td{:style => th_style}
+          = "Programming"
+        %td{:style => "#{th_style} text-align: right;"}=1
+        %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
+        %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
+    - else 
+      - @object.invoice_items.each_with_index do |invoice_item, index|
+        %tr
+          %td{:style => "#{th_style} text-align: right;"}=(index+1)
+          %td{:style => th_style}
+            = "#{invoice_item.description}"
+          %td{:style => "#{th_style} text-align: right;"}=1
+          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price
+          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price
+    %tr
+      %td{:style => th_style}=""
+      %td{:style => th_style}=""
+      %td{:style => th_style}=""
+      %td{:style => th_style}= "Total amount in EUR"
+      %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
+
+  %br
+  %br
+  %div{:style => " margin-top: 20px;"}
+    ="Please effect the payment of the above sum as follows:"
+    %br
+    = "#{our_company.name}"
+    %br
+    = "Bank transfer to IBAN: #{our_company.trr}"
+    %br
+    = "Swift BIC code: #{our_company.swift_bic_code}"
+    %br
+    = "Bank: #{our_company.bank}"
+    %br
+    = "Reference number: #{@object.invoice_number}"
+    
+  %div{:style => "margin-top:50px"}
+    - unless @object.project.partner.footer_text.blank?
+      - @object.project.partner.footer_text
+      %br
+      %br
+    - if @object.additional_law
+      = @object.additional_law.description
+
+  %div{:style => "text-align:right; margin-top: 80px"}
+    = "No signature or stamp required"
+    %br
+    %br
+    = our_company.name
+
