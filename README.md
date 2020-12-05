@@ -1,24 +1,16 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+download backup of old db
 
-Things you may want to cover:
+heroku create new klemennagodesp
 
-* Ruby version
+deployaj app - avtomatsko se bo baza zgenerirala
 
-* System dependencies
+dobi credentialse od baze
 
-* Configuration
+uporabi pg_restore baze na novo lokacijo (google it on heroku)
 
-* Database creation
+heroku run rails c
+AdminUser.create!(email: 'admin@example.com', password: 'xxx', password_confirmation: 'password')
 
-* Database initialization
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
