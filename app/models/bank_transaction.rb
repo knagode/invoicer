@@ -1,5 +1,5 @@
 class BankTransaction < ActiveRecord::Base
-  belongs_to :user
+  #belongs_to :user
 
   def try_to_create_invoice_from_body!
     amount = mail_body.gsub("\n", ' ').split(" EUR ").first.split(" ").last

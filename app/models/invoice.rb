@@ -14,7 +14,7 @@ class Invoice < ActiveRecord::Base
     self.created_at = Time.now
     self.price = 0
     invoice_number_parts = self.invoice_number.split('-')
-    sequence_id = "%02d" % (invoice_number_parts.second.to_i + 1).to_s
+    sequence_id = "%02d" % (invoice_number_parts.last.to_i + 1).to_s
 
     year = invoice_number_parts.first.to_i
 
@@ -30,36 +30,4 @@ class Invoice < ActiveRecord::Base
   def storno?
     storno
   end
-
-  def paid_part!
-    self.status = "paid_part"
-    save!
-  end
-
-  def paid_all!
-    self.status = "paid_all"
-    save!
-  end
-
-  def paid_more!
-    self.status = "paid_more"
-    save!
-  end
-
-  def payments_sum
-    tmp_payments_sum = 0
-    payments.each do |payment|
-      tmp_payments_sum = tmp_payments_sum + payment.price
-    end
-    return tmp_payments_sum
-  end
-
-  def m3_table_admin_autocomplete_label
-    invoice_number
-  end
-
-  def payment_difference
-    "Ammount: #{price} #{currency} / Paid #{payments_sum} #{currency} "
-  end
-
 end
