@@ -2,16 +2,26 @@
 
 download backup of old db
 
-heroku create new klemennagodesp
+heroku create new klemen_nagode_sp
 
 deployaj app - avtomatsko se bo baza zgenerirala
 
-dobi credentialse od baze
+```
+rails run rake db:schema:load
+rails run rake db:migrate
+```
 
+
+## For Marko:
+dobi credentialse od baze
 uporabi pg_restore baze na novo lokacijo (google it on heroku)
 
+
+
+# Create login user
+
 heroku run rails c
-AdminUser.create!(email: 'admin@example.com', password: 'xxx', password_confirmation: 'password')
+AdminUser.create!(email: 'klemen@example.com', password: 'xxx', password_confirmation: 'password')
 
 
 # Setup Zapier for Transferwise
