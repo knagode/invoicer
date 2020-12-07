@@ -1,0 +1,93 @@
+-table_style = "border: 1px solid #ccc; width: 100%; border-right:none; border-bottom:none; margin-left: 0px;"
+-td_style = "border: 1px solid #ccc; border-top: none; border-left:none; padding: 5px;"
+-th_style = td_style + ""
+-th_left_style = td_style + "text-align: right;";
+-h1_style = "font-size: 30px; color: #ccc; text-align: center;"
+- our_company = @our_company
+
+%div{:style => "clear: both; margin-top: 20px; overflow: auto;font-family:Arial;"}
+  %div{:style => "float:left; margin: 0px 0; width: 50%"}
+    = "#{our_company.name}"
+    %br
+    = "#{our_company.address}, #{our_company.zip_code} #{our_company.city}, Slovenia"
+    %br
+    = "Registration number: #{our_company.registration_number}"
+    %br
+    = "Tel: #{our_company.contact_phone}"
+    %br
+    = "E-mail: #{our_company.contact_email}"
+    %br
+
+    - vat_number_SI = 'VAT number: SI'
+    - if @partner.country == 'SI'
+      - vat_number_SI = 'Tax number: '
+    ="#{vat_number_SI}#{our_company.vat_number}"
+    %br
+    %br
+
+  %div{:style => "float:left; margin: 0px 0; clear:both; float: left; width: 50%;"}
+    = @partner.name
+    %br
+    = @partner.address
+    %br
+    = "#{@partner.zip_code} #{@partner.city}, #{(@partner.country)}"
+    %br
+    ="Attention #{@partner.attention_to}"
+    %br
+    %br
+    ="VAT number: #{@partner.vat_number}"
+    %br
+    %br
+
+  %br
+
+  %h1{style: 'float:right'}= "Invoice Report #{@year}"
+
+  %br
+  %br
+
+  %table{:style => table_style + ";clear:both; margin-top: 40px" , :cellspacing => 0}
+    %tr
+      %th{:style => th_style}='Invoice number'
+
+      %th{:style => th_style}='Date'
+      %th{:style => th_style}='Price in EUR'
+
+    - @invoices.each do |invoice|
+      %tr
+        %td{:style => "#{th_style} text-align: center;"}= invoice.invoice_number
+        %td{:style => "#{th_style} text-align: center;"}= l (invoice.service_delivered_at.to_date), format: :default
+        %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice.price
+
+  %br
+
+  %h3{:style => "text-align: right;"}
+    = "Total: "
+    = number_to_currency @invoices.sum(:price)
+
+
+  %br
+  %br
+  %div{:style => " margin-top: 20px;"}
+    ="Please effect the payments to:"
+    %br
+    = "#{our_company.name}"
+    %br
+    = "Bank transfer to IBAN: #{our_company.trr}"
+    %br
+    = "Swift BIC code: #{our_company.swift_bic_code}"
+    %br
+    = "Bank: #{our_company.bank}"
+    
+  %div{:style => "margin-top:50px"}
+    - unless @partner.footer_text.blank?
+      - @partner.footer_text
+      %br
+      %br
+
+  %div{:style => "text-align:right; margin-top: 80px"}
+    = "No signature or stamp required"
+    %br
+    %br
+    = our_company.name
+

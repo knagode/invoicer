@@ -4,6 +4,15 @@ class Invoice < ActiveRecord::Base
   has_many :invoice_items
   belongs_to :additional_law
 
+
+  scope :for_year_and_partner_and_our_company, ->(year, partner, our_company) do 
+    where('extract(year from service_delivered_at) = ?', year)
+                      .joins('INNER JOIN projects ON projects.id=invoices.project_id')
+                      .joins('INNER JOIN partners ON projects.partner_id = partners.id')
+                      .where('partners.id = ? and our_company_id=?', partner.id, our_company.id)
+
+  end
+
   accepts_nested_attributes_for :invoice_items, allow_destroy: true #, reject_if: :reject_experience_date
 
   attr_accessor :payment_difference

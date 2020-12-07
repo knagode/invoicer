@@ -16,7 +16,19 @@ ActiveAdmin.register_page "Dashboard" do
             h1 company.name
             invoices.group('yyyy').select('extract(year from service_delivered_at) as yyyy, sum(price) as total_income').order('yyyy DESC').each do |year|
               h2 year.yyyy.to_i
-              div "#{year.total_income.to_f} EUR"
+              h3 "Total: #{year.total_income.to_f} EUR"
+
+              query = invoices.where('extract(year from service_delivered_at) = ?', year.yyyy)
+                      .joins('INNER JOIN projects ON projects.id=invoices.project_id')
+                      .joins('INNER JOIN partners ON projects.partner_id = partners.id')
+                      .group('partners.id, partners.name, extract(year from service_delivered_at)')
+                      .select('partners.name as partner_name, partners.id as partner_id, extract(year from service_delivered_at) as yyyy, sum(price) as total_price')
+
+              h4 "Reports by company:"
+
+              query.each do |row|
+                div link_to row.partner_name + "(#{row.total_price} EUR)", partner_yearly_report_admin_invoices_path(year: row.yyyy.to_i, partner_id: row.partner_id, our_company_id: company.id)
+              end
             end
           end
         end

@@ -13,6 +13,19 @@ ActiveAdmin.register Invoice do
     render pdf: "#{@object.invoice_number}", template: 'invoices/show', layout: nil
   end
 
+  collection_action :partner_yearly_report, method: :get do 
+    @our_company = OurCompany.find(params[:our_company_id])
+    @year = params[:year]
+    @partner = Partner.find(params[:partner_id])
+
+    @invoices = current_admin_user.invoices
+                    .for_year_and_partner_and_our_company(@year, @partner, @our_company)
+                    .order('service_delivered_at ASC')
+
+
+    render pdf: "#{@our_company.name.dasherize}", template: 'invoices/partner_report', layout: nil
+  end
+
   index do
     id_column
     column :invoice_number
