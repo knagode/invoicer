@@ -39,3 +39,14 @@ Most recent invoice will be copied, price amount will be updated from the conten
 
 
 
+# Company setup:
+Go to /admin -> our companies and create your company
+
+Create partner (who will be invoiced?)
+
+Create project for specific partner
+
+Create invoice based on project
+
+
+
