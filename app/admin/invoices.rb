@@ -23,7 +23,7 @@ ActiveAdmin.register Invoice do
                     .order('service_delivered_at ASC')
 
 
-    render pdf: "#{@our_company.name.dasherize}", template: 'invoices/partner_report', layout: nil
+    render pdf: "#{@year}_#{@partner.name.parameterize.underscore}_and_#{@our_company.name.parameterize.dasherize.underscore}", template: 'invoices/partner_report', layout: nil
   end
 
   index do
