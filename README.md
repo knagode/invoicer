@@ -44,7 +44,7 @@ Go to /admin -> our companies and create your company
 
 Create partner (who will be invoiced?)
 
-Create project for specific partner
+Create project for specific partner (will be deprecated. Insert only: name)
 
 Create invoice based on project
 
