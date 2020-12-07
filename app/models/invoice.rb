@@ -22,7 +22,14 @@ class Invoice < ActiveRecord::Base
       year = Time.current.year
       sequence_id = '01'
     end
-    self.invoice_number = "#{year}-#{sequence_id}"
+
+    mid_part = ''
+    
+    if invoice_number_parts.count == 3
+      mid_part = "-#{invoice_number_parts.second}"
+    end
+
+    self.invoice_number = "#{year}#{mid_part}-#{sequence_id}"
     self.sent_at = 5.days.ago
     self.service_delivered_at = 5.days.ago
   end

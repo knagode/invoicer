@@ -16,6 +16,10 @@ rails run rake db:migrate
 dobi credentialse od baze
 uporabi pg_restore baze na novo lokacijo (google it on heroku)
 
+```
+update invoices set admin_user_id=1 where user_id=?;
+```
+
 
 
 # Create login user

@@ -36,8 +36,9 @@ class MailWebhookController < ApplicationController
     body = ActionController::Base.helpers.strip_tags(body.split('<body>').last).squish # we are receiving HTML with tabs, multiple spaces
 
     user_id = params[:user_id] || 3
+    admin_user_id = params[:admin_user_id] || 1
 
-    bt = BankTransaction.create!(user_id: user_id, amount: params[:amount], mail_body: body, mail_from: params[:from], mail_subject: params[:subject]) 
+    bt = BankTransaction.create!(user_id: user_id, admin_user_id: admin_user_id, amount: params[:amount], mail_body: body, mail_from: params[:from], mail_subject: params[:subject]) 
     bt.try_to_create_invoice_from_body! if body
 
     if bt.is_processed

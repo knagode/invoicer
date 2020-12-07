@@ -1,5 +1,5 @@
 class BankTransaction < ActiveRecord::Base
-  #belongs_to :user
+  belongs_to :admin_user
 
   def try_to_create_invoice_from_body!
     amount = mail_body.gsub("\n", ' ').split(" EUR ").first.split(" ").last
@@ -16,12 +16,13 @@ class BankTransaction < ActiveRecord::Base
     end
 
     if amount.to_i > 0
-      last_invoice = Invoice.where(user_id: user_id).order('created_at desc').first
+      last_invoice = admin_user.invoices.order('service_delivered_at desc nulls last').first
 
       if last_invoice
         invoice =last_invoice.dup
         invoice.set_next_values
         invoice.invoice_items.build(price: amount, description: "Programming")
+
         invoice.save!
 
         update_attributes(is_processed: true, amount: amount, invoice_id: invoice.id)

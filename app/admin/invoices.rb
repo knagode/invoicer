@@ -5,6 +5,8 @@ ActiveAdmin.register Invoice do
                 invoice_items_attributes: [ :id, :invoice_id, :description, :_destroy ]
 
 
+  scope('all', default: true) { |scope| scope.where(admin_user_id: current_admin_user.id) }
+
   member_action :pdf, method: :get do
     #render json: {su: 1}
     @object = resource
