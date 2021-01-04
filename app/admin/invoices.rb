@@ -30,8 +30,29 @@ ActiveAdmin.register Invoice do
 
   controller do
     def new
-      @resource = current_admin_user.invoices.order('sent_at DESC nulls last').first.dup
-      @resource.set_next_values
+      @resource = current_admin_user.invoices
+        .order('service_delivered_at DESC nulls last')
+        .where('service_delivered_at IS NOT NULL')
+        .first
+
+      #raise @resource.limit(10).to_json
+      #.first
+
+      if @resource 
+        #raise @resource.dup.attributes.except('id', 'created_at').to_json
+        @resource = Invoice.new(@resource.dup.attributes.except('id', 'created_at'))
+        @resource.set_next_values
+      else
+        @resource = Invoice.new
+      end
+    end
+
+    def create
+      super
+
+      if resource.persisted?
+        resource.update(admin_user_id: current_admin_user.id)
+      end
     end
   end
 
@@ -67,9 +88,9 @@ ActiveAdmin.register Invoice do
       f.input :service_delivered_at, as: :date_picker
       f.input :additional_law
 
-      # f.has_many :invoice_items, heading: true, allow_destroy: true do |ii|
-      #   ii.input :description #, :as => :datetime_picker
-      # end
+      f.has_many :invoice_items, heading: true, allow_destroy: true do |ii|
+        ii.input :description #, :as => :datetime_picker
+      end
     end
 
     f.actions
