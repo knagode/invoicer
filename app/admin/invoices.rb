@@ -26,6 +26,15 @@ ActiveAdmin.register Invoice do
     render pdf: "#{@year}_#{@partner.name.parameterize.underscore}_and_#{@our_company.name.parameterize.dasherize.underscore}", template: 'invoices/partner_report', layout: nil
   end
 
+  #app/admin/your_resource.rb
+
+  controller do
+    def new
+      @resource = current_admin_user.invoices.order('sent_at DESC nulls last').first.dup
+      @resource.set_next_values
+    end
+  end
+
   index do
     id_column
     column :invoice_number
