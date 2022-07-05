@@ -16,16 +16,18 @@ class BankTransaction < ActiveRecord::Base
     end
 
     if amount.to_i > 0
-      last_invoice = admin_user.invoices.order('service_delivered_at desc nulls last').first
+      last_invoice = admin_user.invoices.order('service_delivered_at desc nulls last').where('price < 1 AND created_at > NOW() - INTERVAL "1 MONTH"').first
 
       if last_invoice
-        invoice =last_invoice.dup
-        invoice.set_next_values
-        invoice.invoice_items.build(price: amount, description: "Programming")
+        # invoice =last_invoice.dup
+        # invoice.set_next_values
+        # invoice.invoice_items.build(price: amount, description: "Programming")
 
-        invoice.save!
+        # invoice.save!
 
-        update_attributes(is_processed: true, amount: amount, invoice_id: invoice.id)
+        # update_attributes(is_processed: true, amount: amount, invoice_id: invoice.id)
+
+        last_invoice.update(amount: amount, is_processed: true) # let's add EUR value beside each invoice
       else
         raise 'create one invoice first - after that we will be able to create new invoices automatically'
       end

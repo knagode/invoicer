@@ -6,4 +6,9 @@ class AdminUser < ApplicationRecord
 
   has_many :invoices
   has_many :bank_transactions
+
+
+  def beweekly_salary_amount
+    ENV['BEWEEKLY_SALARY_AMOUNT'] || 33.11
+  end
 end

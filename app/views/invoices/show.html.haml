@@ -64,12 +64,25 @@
       %br
 
   %table{:style => table_style, :cellspacing => 0}
+    - currency_format = "%n %u"
+    - currency_unit = 'EUR'
+    - price = @object.price
+    - currency_separator = ","
+    - currency_delimiter = "."
+
+    - if @object.usd_price 
+      - price = @object.usd_price
+      - currency_unit = 'USD'
+      - currency_separator = "."
+      - currency_delimiter = ","
+
+
     %tr
       %th{:style => th_style}='Serial no.'
       %th{:style => th_style}='Service description'
       %th{:style => th_style}='Quantity'
-      %th{:style => th_style}='Price in EUR per unit'
-      %th{:style => th_style}='Total amount in EUR'
+      %th{:style => th_style}='Price per unit in ' + currency_unit
+      %th{:style => th_style}='Total amount in ' + currency_unit
     
     - if @object.invoice_items.empty?
       %tr
@@ -77,8 +90,8 @@
         %td{:style => th_style}
           = "Programming"
         %td{:style => "#{th_style} text-align: right;"}=1
-        %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
-        %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
+        %td{:style => "#{th_style} text-align: right;"}= number_to_currency price, unit: currency_unit, format: currency_format, separator: currency_separator, delimiter: currency_delimiter
+        %td{:style => "#{th_style} text-align: right;"}= number_to_currency price, unit: currency_unit, format: currency_format, separator: currency_separator, delimiter: currency_delimiter
     - else 
       - @object.invoice_items.each_with_index do |invoice_item, index|
         %tr
@@ -86,14 +99,14 @@
           %td{:style => th_style}
             = "#{invoice_item.description}"
           %td{:style => "#{th_style} text-align: right;"}=1
-          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price
-          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price
+          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price, unit: currency_unit, format: currency_format, separator: currency_separator, delimiter: currency_delimiter
+          %td{:style => "#{th_style} text-align: right;"}= number_to_currency invoice_item.price, unit: currency_unit, format: currency_format, separator: currency_separator, delimiter: currency_delimiter
     %tr
       %td{:style => th_style}=""
       %td{:style => th_style}=""
       %td{:style => th_style}=""
-      %td{:style => th_style}= "Total amount in EUR"
-      %td{:style => "#{th_style} text-align: right;"}= number_to_currency @object.price
+      %td{:style => th_style}= 'Total amount in ' + currency_unit
+      %td{:style => "#{th_style} text-align: right;"}= number_to_currency price, unit: currency_unit, format: currency_format, separator: currency_separator, delimiter: currency_delimiter
 
   %br
   %br

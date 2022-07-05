@@ -1,7 +1,7 @@
 ActiveAdmin.register Invoice do
   # permit_params :processed, :notes
 
-  permit_params :project_id, :price, :our_company_id, :invoice_number, :sent_at, :due_days, :service_delivered_at, :additional_law_id,
+  permit_params :project_id, :price, :our_company_id, :invoice_number, :sent_at, :due_days, :service_delivered_at, :additional_law_id, :usd_price,
                 invoice_items_attributes: [ :id, :invoice_id, :description, :_destroy ]
 
 
@@ -42,6 +42,8 @@ ActiveAdmin.register Invoice do
         #raise @resource.dup.attributes.except('id', 'created_at').to_json
         @resource = Invoice.new(@resource.dup.attributes.except('id', 'created_at'))
         @resource.set_next_values
+        @resource.sent_at = Time.now
+        @resource.service_delivered_at = Time.now
       else
         @resource = Invoice.new
       end
@@ -61,6 +63,7 @@ ActiveAdmin.register Invoice do
     column :invoice_number
     column :service_delivered_at
     column :price
+    column :usd_price
     # column :user_id
     # column :product_id
     # column :stripe_charge_id do |order|
@@ -81,6 +84,7 @@ ActiveAdmin.register Invoice do
     f.inputs do
       f.input :project
       f.input :price
+      f.input :usd_price
       f.input :our_company
       f.input :invoice_number
       f.input :due_days
