@@ -10,7 +10,16 @@ ActiveAdmin.register Invoice do
   member_action :pdf, method: :get do
     #render json: {su: 1}
     @object = resource
+
+    @object.send_email
+
     render pdf: "#{@object.invoice_number}", template: 'invoices/show', layout: nil
+  end
+
+  member_action :send_pdf, method: :post do
+    resource.send_email
+
+    redirect_back(fallback_location: root_path, notice: "Email has just been sent")
   end
 
   collection_action :partner_yearly_report, method: :get do 
@@ -75,7 +84,10 @@ ActiveAdmin.register Invoice do
 
 
     actions defaults: true do |o|
-      item "PDF", pdf_admin_invoice_path(o) #'#pdf' #app_data_application_integration_path(ai) 
+      [
+        link_to('PDF', pdf_admin_invoice_path(o)),
+        link_to('Email PDF', send_pdf_admin_invoice_path(o), method: :post, data: {confirm: "Are you sure?"})
+      ].join(' ').html_safe
     end
   end
 

@@ -3,6 +3,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :our_company
   has_many :invoice_items
   belongs_to :additional_law
+  belongs_to :admin_user
 
 
   scope :for_year_and_partner_and_our_company, ->(year, partner, our_company) do 
@@ -45,5 +46,12 @@ class Invoice < ActiveRecord::Base
 
   def storno?
     storno
+  end
+
+
+  def send_email
+    if project.partner.forward_invoice_to_email
+      ApplicationMailer.invoice_email(self).deliver_now
+    end
   end
 end
