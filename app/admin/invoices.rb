@@ -44,9 +44,6 @@ ActiveAdmin.register Invoice do
         .where('service_delivered_at IS NOT NULL')
         .first
 
-      #raise @resource.limit(10).to_json
-      #.first
-
       if @resource 
         #raise @resource.dup.attributes.except('id', 'created_at').to_json
         @resource = Invoice.new(@resource.dup.attributes.except('id', 'created_at'))
@@ -58,13 +55,13 @@ ActiveAdmin.register Invoice do
       end
     end
 
-    def create
-      super
+    # def create
+    #   super
+    # end
+  end
 
-      if resource.persisted?
-        resource.update(admin_user_id: current_admin_user.id)
-      end
-    end
+  before_create do |invoice|
+    invoice.admin_user = current_admin_user
   end
 
   index do
