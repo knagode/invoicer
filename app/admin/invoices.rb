@@ -11,8 +11,6 @@ ActiveAdmin.register Invoice do
     #render json: {su: 1}
     @object = resource
 
-    @object.send_email
-
     render pdf: "#{@object.invoice_number}", template: 'invoices/show', layout: nil
   end
 
